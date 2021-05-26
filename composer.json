@@ -43,7 +43,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Waglpz\\GcloudArchiv": "src"
+            "Waglpz\\GcloudArchiv\\": "src"
         }
     },
     "autoload-dev": {
@@ -56,10 +56,9 @@
     "scripts": {
         "waglpz:cs-check": "phpcs -p --parallel=100",
         "waglpz:cs-fix": "phpcbf -p --parallel=100",
-        "waglpz:pre-test": "php bin/recreate-test-db.php",
         "waglpz:unit": "phpunit --colors=always tests",
         "waglpz:analyse": [
-            "phpstan analyse --configuration=phpstan.neon bin/ config/ public/ src/ tests/ --level max"
+            "phpstan analyse --configuration=phpstan.neon src/ tests/ --level max"
         ],
         "waglpz:check": [
             "@waglpz:cs-check",
@@ -67,7 +66,6 @@
             "@waglpz:test"
         ],
         "waglpz:test": [
-            "@waglpz:pre-test",
             "@waglpz:unit"
         ]
     }
