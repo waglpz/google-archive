@@ -4,8 +4,75 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "85480e740270bc19521d456d96879f24",
+    "content-hash": "398a235ea9af15bec3f1a6c8fdb0afc7",
     "packages": [
+        {
+            "name": "beberlei/assert",
+            "version": "v3.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/beberlei/assert.git",
+                "reference": "5e721d7e937ca3ba2cdec1e1adf195f9e5188372"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/beberlei/assert/zipball/5e721d7e937ca3ba2cdec1e1adf195f9e5188372",
+                "reference": "5e721d7e937ca3ba2cdec1e1adf195f9e5188372",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ctype": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "ext-simplexml": "*",
+                "php": "^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "*",
+                "phpstan/phpstan": "*",
+                "phpunit/phpunit": ">=6.0.0",
+                "yoast/phpunit-polyfills": "^0.1.0"
+            },
+            "suggest": {
+                "ext-intl": "Needed to allow Assertion::count(), Assertion::isCountable(), Assertion::minCount(), and Assertion::maxCount() to operate on ResourceBundles"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Assert\\": "lib/Assert"
+                },
+                "files": [
+                    "lib/Assert/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Richard Quadling",
+                    "email": "rquadling@gmail.com",
+                    "role": "Collaborator"
+                }
+            ],
+            "description": "Thin assertion library for input validation in business models.",
+            "keywords": [
+                "assert",
+                "assertion",
+                "validation"
+            ],
+            "support": {
+                "issues": "https://github.com/beberlei/assert/issues",
+                "source": "https://github.com/beberlei/assert/tree/v3.3.1"
+            },
+            "time": "2021-04-18T20:11:03+00:00"
+        },
         {
             "name": "brick/math",
             "version": "0.9.2",
@@ -951,6 +1018,124 @@
             "time": "2020-12-14T13:15:25+00:00"
         },
         {
+            "name": "nikolaposa/cascader",
+            "version": "1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nikolaposa/cascader.git",
+                "reference": "3f5b7f30b9ab6daff6aa6641de9baa29c6a224db"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nikolaposa/cascader/zipball/3f5b7f30b9ab6daff6aa6641de9baa29c6a224db",
+                "reference": "3f5b7f30b9ab6daff6aa6641de9baa29c6a224db",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.7",
+                "phpunit/phpunit": "^8.5 || ^9.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Cascader\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nikola Posa",
+                    "email": "posa.nikola@gmail.com",
+                    "homepage": "http://www.nikolaposa.in.rs/"
+                }
+            ],
+            "description": "Utility for creating objects in PHP from constructor parameters definitions.",
+            "keywords": [
+                "cascade",
+                "cascade-creation",
+                "factory",
+                "generic",
+                "instantiate"
+            ],
+            "support": {
+                "issues": "https://github.com/nikolaposa/cascader/issues",
+                "source": "https://github.com/nikolaposa/cascader/tree/1.3.0"
+            },
+            "time": "2020-12-12T21:20:02+00:00"
+        },
+        {
+            "name": "nikolaposa/monolog-factory",
+            "version": "3.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nikolaposa/monolog-factory.git",
+                "reference": "e0bb3a5c3035ca19d2dd61be13b4692bea45abce"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nikolaposa/monolog-factory/zipball/e0bb3a5c3035ca19d2dd61be13b4692bea45abce",
+                "reference": "e0bb3a5c3035ca19d2dd61be13b4692bea45abce",
+                "shasum": ""
+            },
+            "require": {
+                "beberlei/assert": "^3.2",
+                "monolog/monolog": "^2.0",
+                "nikolaposa/cascader": "^1.3",
+                "php": "^7.2 || ^8.0",
+                "psr/container": "^1.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.7",
+                "phpunit/phpunit": "^8.0 || ^9.4",
+                "rollbar/rollbar": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "MonologFactory\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nikola Poša",
+                    "email": "posa.nikola@gmail.com",
+                    "homepage": "https://www.nikolaposa.in.rs"
+                }
+            ],
+            "description": "Configuration-based Monolog factory",
+            "keywords": [
+                "container",
+                "factory",
+                "monolog",
+                "psr11"
+            ],
+            "support": {
+                "issues": "https://github.com/nikolaposa/monolog-factory/issues",
+                "source": "https://github.com/nikolaposa/monolog-factory/tree/3.1.0"
+            },
+            "time": "2020-12-14T14:56:50+00:00"
+        },
+        {
             "name": "psr/cache",
             "version": "1.0.1",
             "source": {
@@ -998,6 +1183,54 @@
                 "source": "https://github.com/php-fig/cache/tree/master"
             },
             "time": "2016-08-06T20:24:11+00:00"
+        },
+        {
+            "name": "psr/container",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/container.git",
+                "reference": "8622567409010282b7aeebe4bb841fe98b58dcaf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/container/zipball/8622567409010282b7aeebe4bb841fe98b58dcaf",
+                "reference": "8622567409010282b7aeebe4bb841fe98b58dcaf",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Container\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common Container Interface (PHP FIG PSR-11)",
+            "homepage": "https://github.com/php-fig/container",
+            "keywords": [
+                "PSR-11",
+                "container",
+                "container-interface",
+                "container-interop",
+                "psr"
+            ],
+            "support": {
+                "issues": "https://github.com/php-fig/container/issues",
+                "source": "https://github.com/php-fig/container/tree/1.1.1"
+            },
+            "time": "2021-03-05T17:36:06+00:00"
         },
         {
             "name": "psr/http-client",
