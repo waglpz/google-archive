@@ -6,6 +6,9 @@ namespace Waglpz\GcloudArchiv;
 
 use Google\Cloud\Firestore\FirestoreClient;
 use Google\Cloud\Firestore\Transaction;
+use Psr\Http\Message\StreamInterface;
+use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 final class Archivator
@@ -14,18 +17,43 @@ final class Archivator
     /** @var array<mixed>|null */
     private ?array $mandatory;
     private GoogleFileStorage $googleFileManager;
+    private LoggerInterface $logger;
 
     /**
-     * @param array<mixed>|null $mandatory
+     * @param array<mixed>|null $requiredFields
      */
     public function __construct(
+        LoggerInterface $logger,
         FirestoreClient $firestoreClient,
         GoogleFileStorage $googleFileManager,
-        ?array $mandatory = null
+        ?array $requiredFields = null
     ) {
         $this->firestoreClient   = $firestoreClient;
-        $this->mandatory         = $mandatory;
+        $this->mandatory         = $requiredFields;
         $this->googleFileManager = $googleFileManager;
+        $this->logger            = $logger;
+    }
+
+    public function downloadAsStream(string $anwendungName, string $anwendungId): StreamInterface
+    {
+        $document = $this->firestoreClient->collection($anwendungName)->document($anwendungId);
+
+        $snapshot = $document->snapshot();
+        if (isset($snapshot['googleFileName']) && Uuid::isValid($snapshot['googleFileName'])) {
+            $fileName = Uuid::fromString($snapshot['googleFileName']);
+
+            return $this->googleFileManager->getByName($fileName);
+        }
+
+        $message = \sprintf(
+            'Search params $anwendungsName "%s" or $anwendungsId "%s" invalid or File does not exist in bucket.',
+            $anwendungName,
+            $anwendungId
+        );
+
+        $this->logger->error($message);
+
+        throw new \InvalidArgumentException($message);
     }
 
     /**
@@ -46,7 +74,8 @@ final class Archivator
                 $uuid = $this->googleFileManager->fromBase64($filePathOrContent);
             }
         } catch (\Throwable $notOk) {
-            //$this->logger->alert();
+            $this->logger->error('File could not upload to Google cloud storage ' . $notOk->getMessage());
+
             return false;
         }
 
@@ -54,35 +83,76 @@ final class Archivator
             fn (Transaction $t) => $this->putMetaData($t, $anwendungName, $anwendungId, $uuid, ...$field)
         );
 
-        if (! $success) {
+        if (! (bool) $success) {
             $this->googleFileManager->delete($uuid);
+            $this->logger->error('Unsuccessfully persisting file meta data to Firestore DB.');
+
+            return false;
         }
 
-        return $success;
+        return true;
     }
 
     /**
      * @internal please use this method internal only !!!
      */
-    public function putMetaData(Transaction $t, string $anwendungName, string $anwendungId, UuidInterface $uuid, string ...$field): bool
-    {
-        $document = $this->firestoreClient->collection($anwendungName)->document($anwendungId);
+    public function putMetaData(
+        Transaction $transaction,
+        string $anwendungsName,
+        string $anwendungsId,
+        UuidInterface $uuid,
+        string ...$field
+    ): bool {
+        $collection = $this->firestoreClient->collection($anwendungsName);
+        $query      = $collection->where('anwendungsId', '=', $anwendungsId);
 
-//        $snapshot = $t->snapshot($document);
-        $t->set($document, ['googleFileName', $uuid->toString()]);
-return true;
-        /*$document->set(['googleFileName', $uuid->toString()]);
-        $document->set(['anwendungId', $anwendungId]);
+        $documents = $query->documents();
+
+        if (\count($documents->rows()) > 0) {
+            $this->logger->error(
+                \sprintf(
+                    'Another document with id "%s" already exist in collection "%s".',
+                    $anwendungsId,
+                    $anwendungsName
+                )
+            );
+
+            return false;
+        }
+
+        $document     = $collection->document($anwendungsId);
+        $documentData = [
+            'anwendungsId'   => $anwendungsId,
+            'googleFileName' => $uuid->toString(),
+            'createdAtTs'    => \time(),
+            'createdAt'      => (new \DateTimeImmutable())->format(\DateTimeImmutable::ATOM),
+        ];
+        $required     = $this->mandatory;
 
         foreach ($field as $value) {
             $fieldDefinition = \explode(':', $value);
 
             if (\count($fieldDefinition) < 2) {
-                throw new \InvalidArgumentException('Expected in form fieldName:fieldValue given ' . $value . '.');
+                $this->logger->error('Field expected in form fieldName:fieldValue given ' . $value . '.');
+
+                return false;
             }
 
-            $document->set([$fieldDefinition[0], $fieldDefinition[1]]);
+            if (\is_array($required)) {
+                unset($required[$fieldDefinition[0]]);
+            }
+
+            $documentData[$fieldDefinition[0]] = $fieldDefinition[1];
         }
-        */
+
+        if ($required !== null && \count($required) > 0) {
+            $this->logger->error('One of required fields was not present');
+
+            return false;
+        }
+
+        $transaction->set($document, $documentData);
+
+        return true;
     }
 }
