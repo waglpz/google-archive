@@ -27,7 +27,7 @@ final class ArchivatorTest extends TestCase
         $googleFileManager->expects(self::once())->method('fromBase64')->with('content')->willReturn($uuid);
         $googleFileManager->expects(self::once())->method('delete')->with($uuid);
 
-        $sut  = new Archivator($firestoreClient, $googleFileManager);
+        $sut  = new Archivator($firestoreClient, $firestoreClient, $googleFileManager);
         $fact = $sut->putFile('content', 'TestanwendunsName', '123');
 
         self::assertFalse($fact);
@@ -46,7 +46,7 @@ final class ArchivatorTest extends TestCase
                           ->willThrowException(new \Error('ERRRRRROR!'));
         $googleFileManager->expects(self::never())->method('delete');
 
-        $sut = new Archivator($firestoreClient, $googleFileManager);
+        $sut = new Archivator($firestoreClient, $firestoreClient, $googleFileManager);
 
         $fact = $sut->putFile('content', 'TestanwendunsName', '123');
 
@@ -104,7 +104,7 @@ final class ArchivatorTest extends TestCase
 
         $field1 = 'a:b';
         $field2 = 'y:z';
-        $sut    = new Archivator($firestoreClient, $googleFileManager);
+        $sut    = new Archivator($firestoreClient, $firestoreClient, $googleFileManager);
         $sut->putMetaData('TestanwendunsName', '123', $uuid, $field1, $field2);
     }
 
@@ -128,7 +128,7 @@ final class ArchivatorTest extends TestCase
         $googleFileManager = $this->createMock(GoogleFileStorage::class);
 
         $field = 'a';
-        $sut   = new Archivator($firestoreClient, $googleFileManager);
+        $sut   = new Archivator($firestoreClient, $firestoreClient, $googleFileManager);
 
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Expected in form fieldName:fieldValue given a.');
